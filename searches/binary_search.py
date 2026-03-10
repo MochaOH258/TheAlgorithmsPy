@@ -197,11 +197,48 @@ def binary_search(sorted_collection: list[int], item: int) -> int:
     >>> binary_search([0, 5, 7, 10, 15], 6)
     -1
     """
+    # 有序性验证
     if any(a > b for a, b in pairwise(sorted_collection)):
         raise ValueError("sorted_collection must be sorted in ascending order")
     left = 0
     right = len(sorted_collection) - 1
 
+    '''
+    二分查找
+    先从数组的开头和末尾开始取中间数，对比查找数与中间位置数
+    >相同>输出中间数位置为查找到的位置
+    >小>将上界设为中间位置前一位
+    >大>将下界设为中间位置后一位
+
+    结束条件为查找到或直到下界大于上界时，还没有匹配到
+
+    同时查找到的不能保证是给出数组中相同数字中的第一个/最后一个
+    
+    遍历查找时间最大为n，此方法为约log2n（不考虑有序性验证的情况下，验证本身复杂度为n）
+    '''
+    '''
+二分查找
+
+前提：数组必须按升序排列。
+
+维护当前搜索区间 [left, right]：
+1. 取中间下标 midpoint
+2. 比较中间元素 current_item 和目标 item
+   - 若相等，直接返回 midpoint
+   - 若 item < current_item，说明目标只可能在左半区间，
+     将 right 更新为 midpoint - 1
+   - 若 item > current_item，说明目标只可能在右半区间，
+     将 left 更新为 midpoint + 1
+
+循环结束条件：
+当 left > right 时，搜索区间为空，说明目标不存在，返回 -1
+
+复杂度：
+- 若只看二分查找部分，时间复杂度为 O(log n)
+- 但本实现先检查数组是否升序，该检查为 O(n)，
+  因此整个函数最坏时间复杂度为 O(n)
+- 空间复杂度为 O(1)
+'''
     while left <= right:
         midpoint = left + (right - left) // 2
         current_item = sorted_collection[midpoint]
